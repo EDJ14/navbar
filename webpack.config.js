@@ -28,6 +28,10 @@ module.exports = {
             loader: 'sass-loader' // compiles Sass to CSS
           }
         ]
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: ['file-loader']
       }
     ]
   },
@@ -38,6 +42,7 @@ module.exports = {
     filename: 'bundle.js'
   },
   devServer: {
+    historyApiFallback: true,
     contentBase: path.join(__dirname, 'public/'),
     port: 3000,
     publicPath: 'http://localhost:3000/dist/',
