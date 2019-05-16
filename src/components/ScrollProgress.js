@@ -23,7 +23,7 @@ class ScrollProgress extends React.Component {
       document.documentElement.clientHeight;
     const scrolled = `${(scrollPx / winHeightPx) * 100}%`;
 
-    console.log(scrolled);
+    //console.log(scrolled);
 
     this.setState({
       scrolled: scrolled
