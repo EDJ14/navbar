@@ -1,41 +1,33 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
 import styled from 'styled-components';
-import { Transition } from 'react-transition-group';
 
 import ScrollProgress from './ScrollProgress';
+import SaveButton from './SaveButton';
 
 const Contr = styled.div`
-  margin: 3rem;
+  background-image: linear-gradient(to bottom right, white, rgb(225, 230, 239));
+  margin: 1.5rem 2.5rem;
+  box-shadow: 0 0 10px;
+  border-radius: 4px;
   display: grid;
   grid-template-columns: 2fr 2fr 1fr 1fr;
-  grid-template-rows: 1fr 2fr 2fr 1fr;
+  grid-template-rows: 0.5fr min-content 0.5fr 0.75fr;
   grid-gap: 10px;
   grid-template-areas:
     'head head head head'
     'main main main main'
-    'main main main main'
-    'auth date .    .   ';
+    'auth date .    .   '
+    'save save save save';
   width: 35vw;
-  height: 30vh;
+  height: min-content;
   border: 1px solid grey;
-  box-shadow: 0 0 5px;
+  position: relative;
 `;
 
-/* const Gridr = styled.div`
-  display: grid;
-  grid-gap: 1px;
-  justify-items: stretch;
-  grid-template-columns: 1fr 2fr 2fr 1fr;
-  grid-template-rows: 1fr 2fr 2fr 1fr;
-  grid-template-areas:
-    '. head head .'
-    'main main main main'
-    'main main main main'
-    'auth . . dat';
-`; */
-
 const Headline = styled.div`
+  margin: 2rem 1.5rem 0 1.5rem;
   grid-area: head;
   font-weight: bold;
   text-align: center;
@@ -45,13 +37,16 @@ const Headline = styled.div`
 `;
 const Articlesec = styled.div`
   grid-area: main;
-  background-color: rgb(237, 239, 242);
+  height: min-content;
+  margin: 0 2rem 3rem 2rem;
+  font-size: 1.05rem;
   display: flex;
   justify-content: start;
   align-items: center;
 
   ul li:last-of-type {
     margin-top: 10px;
+    color: grey;
   }
 `;
 const Authr = styled.div`
@@ -65,33 +60,22 @@ const Dat = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: max-content;
 `;
 
-class NYTest extends Component {
-  state = { articles: [], inProp: false, setInProp: false };
-
+class NYTestRedux extends Component {
   handleClickNews = async () => {
-    let art = this.state.articles;
-    this.setState({ inProp: true });
+    let art = [];
 
-    const keyurl =
-      'https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=iOY5EuklpHJcrAeNGlvPKAt0yf8EktdN';
-
-    const res = await axios.get(keyurl);
-    // res.data.response.docs.map(doc => console.log(doc.abstract));
-    console.log(res);
-
-    art.push(res.data.response.docs);
-
-    this.setState({ articles: art });
+    this.props.fetchArticles();
   };
 
   renderContent() {
-    if (this.state.articles.length == 0) {
+    console.log('nytestredux props.articles', this.props.articles);
+
+    if (this.props.articles == null) {
       return;
     }
-
-    console.log(this.state);
 
     const sty = {};
     sty['margin'] = '4rem';
@@ -99,7 +83,9 @@ class NYTest extends Component {
     sty['fontSize'] = '2rem';
     sty['display'] = 'inline';
 
-    return this.state.articles.map(instance =>
+    //this.props.articles.map(instance => console.log(instance.abstract));
+
+    return this.props.articles.map(instance =>
       instance.map(({ abstract, pub_date, headline, web_url }) => {
         let abs2 = abstract
           .split(' ')
@@ -109,19 +95,17 @@ class NYTest extends Component {
           .join(' ');
 
         return (
-          <div style={{ display: 'inline-block' }}>
+          <div key={pub_date} style={{ display: 'inline-block' }}>
             <Contr>
               <Headline>
-                <a href={web_url}>{headline.main}</a>
+                <a href={web_url}>{headline.main.toUpperCase()}</a>
               </Headline>
               <Articlesec>{abs2}</Articlesec>
-              <Authr>BITCH</Authr>
-              <Dat>{pub_date}</Dat>
+              <Authr>AUTHOR</Authr>
+              <Dat>{(new Date(pub_date) + '').slice(0, 16)}</Dat>
+              <SaveButton user={this.props.user} headline={headline.main} />
             </Contr>
           </div>
-          /*<div key={abstract} style={sty}>
-            {abs2}
-          </div> */
         );
       })
     );
@@ -137,11 +121,18 @@ class NYTest extends Component {
             PRESS FOR NOOS
           </button>
         </div>
-        <div>{this.renderContent()}</div>
+        <div style={{ margin: '0 auto' }}>{this.renderContent()}</div>
         <ScrollProgress />
       </div>
     );
   }
 }
 
-export default NYTest;
+const mapStateToProps = state => {
+  return { user: state.auth, articles: state.articles };
+};
+
+export default connect(
+  mapStateToProps,
+  actions
+)(NYTestRedux);

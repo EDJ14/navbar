@@ -1,4 +1,20 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
+
+const Bkgrnd = styled.div`
+  background-color: rgba(240, 201, 193, 1);
+  display: grid;
+  grid-template-columns: 50px 50px 50px 50px;
+  grid-template-rows: auto;
+  grid-template-areas:
+    'article article article article'
+    'article article article article'
+    'author author date date';
+`;
+
+const artCont = styled.div`
+  grid-template: "article article article article
+`;
 
 class NYTSearch extends Component {
   state = { term: '', articles: [] };
@@ -41,7 +57,7 @@ class NYTSearch extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <label htmlFor="search" />
+          <label htmlFor="search">ENTER SEARCH</label>
           <input
             onSubmit={this.handleSubmit}
             id="search"

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 const Button = styled.button`
   font-size: 1rem;
@@ -33,6 +34,12 @@ const Header = styled.header`
   display: flex;
 `;
 
+const ArtBox = styled.div`
+  position: fixed;
+  margin: 15rem;
+  z-index: 10;
+`;
+
 const theme = {
   main: 'mediumseagreen'
 };
@@ -40,19 +47,26 @@ const theme = {
 class StyledNav extends Component {
   render() {
     return (
-      <Header>
-        <Button theme={{ main: 'royalblue' }}>Ad hoc theme</Button>
-        <ThemeProvider theme={theme}>
-          <div>
-            <Link to="/normalnav">
-              <Button>Themed</Button>
-            </Link>
-            <Button theme={{ main: 'darkorange' }}>Overidden</Button>
-          </div>
-        </ThemeProvider>
-      </Header>
+      <div>
+        <Header>
+          <Button theme={{ main: 'royalblue' }}>Ad hoc theme</Button>
+          <ThemeProvider theme={theme}>
+            <div>
+              <Link to="/normalnav">
+                <Button>Themed</Button>
+              </Link>
+              <Button theme={{ main: 'darkorange' }}>Overidden</Button>
+            </div>
+          </ThemeProvider>
+        </Header>
+        <ArtBox>HELLO</ArtBox>
+      </div>
     );
   }
 }
 
-export default StyledNav;
+function mapStateToProps(state) {
+  return { articles: state.articles };
+}
+
+export default connect(mapStateToProps)(StyledNav);

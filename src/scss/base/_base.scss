@@ -1,3 +1,6 @@
+$font-primary: 'Nunito', sans-serif;
+$font-display: 'Josefin Sans', sans-serif;
+
 *,
 *::before,
 *::after {
@@ -15,4 +18,13 @@ body {
   color: $color-grey-dark-2;
   font-weight: 300;
   line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    color: black;
+  }
 }

@@ -12,6 +12,7 @@ import StripeBar from './StripeBar';
 import NavBarTWO from './NavBarTWO';
 import NYTest from './NYTest';
 import NYTSearch from './NYTSearch';
+import NYTestRedux from './NYTestRedux';
 
 class App extends Component {
   componentDidMount() {
@@ -28,6 +29,7 @@ class App extends Component {
         <Route exact path="/navstyle" component={StyledNav} />
         <Route exact path="/nyt" component={NYTest} />
         <Route exact path="/search" component={NYTSearch} />
+        <Route exact path="/nyredux" component={NYTestRedux} />
       </BrowserRouter>
     );
   }
