@@ -29,7 +29,7 @@ class NavBarTWO extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ gridArea: 'head' }}>
         <header>
           <Link to="/navstyle">
             <h1 className="logo">Logo</h1>
@@ -38,10 +38,10 @@ class NavBarTWO extends Component {
           <nav>
             <ul>
               <li>
-                <a href="#">Home</a>
+                <Link to="/nyredux">NY Redux</Link>
               </li>
               <li>
-                <a href="#">About</a>
+                <Link to="/content">Content</Link>
               </li>
               <li>
                 <a href="#">Blog</a>

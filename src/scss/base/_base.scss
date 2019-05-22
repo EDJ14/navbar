@@ -11,6 +11,7 @@ $font-display: 'Josefin Sans', sans-serif;
 html {
   box-sizing: border-box;
   font-size: 62.5%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -27,4 +28,20 @@ a {
   &:hover {
     color: black;
   }
+}
+
+.gridtest {
+  display: grid;
+  grid-template-rows: 10vh 80vh 10vh;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+#root {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 10vh minmax(75vh, 1fr) 15vh;
+  grid-template-areas:
+    'head head head head head'
+    'body body body body body'
+    'foot foot foot foot foot';
 }

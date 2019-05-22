@@ -13,6 +13,9 @@ import NavBarTWO from './NavBarTWO';
 import NYTest from './NYTest';
 import NYTSearch from './NYTSearch';
 import NYTestRedux from './NYTestRedux';
+import GridTest from './GridTest';
+import Content from './Content';
+import Footer from './Footer';
 
 class App extends Component {
   componentDidMount() {
@@ -22,7 +25,9 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
+        <NavBarTWO />
         <Route exact path="/navtwo" component={NavBarTWO} />
+        <Route exact path="/content" component={Content} />
         <Route exact path="/normalnav" component={StripeBar} />
         <Route exact path="/p1" component={Page1} />
         <Route exact path="/styled" component={StyledPractice} />
@@ -30,6 +35,8 @@ class App extends Component {
         <Route exact path="/nyt" component={NYTest} />
         <Route exact path="/search" component={NYTSearch} />
         <Route exact path="/nyredux" component={NYTestRedux} />
+        <Route exact path="/grid" component={GridTest} />
+        <Footer />
       </BrowserRouter>
     );
   }

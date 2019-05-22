@@ -5,54 +5,52 @@ import axios from 'axios';
 import * as actions from '../actions';
 
 import { IconContext } from 'react-icons';
-import { MdThumbDown, MdThumbUp, MdStarBorder } from 'react-icons/md';
+import {
+  MdThumbDown,
+  MdThumbUp,
+  MdStarBorder,
+  MdHourglassEmpty
+} from 'react-icons/md';
 
-const SaveBut = styled.div`
-  grid-area: save;
-  justify-self: end;
-  align-self: end;
-  margin-right: 2rem;
-  margin-bottom: 2rem;
-  height: 1rem;
-  width: 1rem;
-  background-color: ${props => {
-    switch (props.backgrnd) {
-      case 'INIT':
-        return 'black';
-      case 'LOAD':
-        return 'green';
-      case 'END':
-        return 'blue';
-    }
-  }}
-  z-index: 100;
-  cursor: pointer;
-`;
+import Spinner from './Spinner';
 
 const SaveButCont = styled.div`
   grid-area: save;
   display: flex;
   justify-content: start;
   align-items: center;
+  margin-bottom: 1rem;
 `;
 
 const StarBd = styled.div`
   grid-area: save;
+  margin-left: 3rem;
+  cursor: pointer;
 `;
 
 const Liked = styled.div`
   grid-area: like;
-  margin-left: auto;
+  margin-left: 35%;
+  cursor: pointer;
+
+  &:last-of-type {
+    margin-left: 3rem;
+  }
 `;
 
 class SaveButton extends Component {
-  state = { isLoading: 'INIT', count: 0, color: 'black' };
+  state = {
+    isLoading: 'INIT',
+    count: 0,
+    color: 'black',
+    likes: 0,
+    dislikes: 0
+  };
 
   handleClick = async values => {
-    const cnt = this.state.count + 1;
     this.setState({
       isLoading: 'LOAD',
-      count: cnt,
+      count: this.state.count + 1,
       color: this.state.color == 'gold' ? 'black' : 'gold'
     });
 
@@ -60,12 +58,7 @@ class SaveButton extends Component {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function sleep() {
-      await timeout(3000);
-      return;
-    }
-
-    await sleep();
+    await timeout(2000);
 
     //await axios.post('/api/user', values);
     const clr = this.state.count % 2 == 0 ? 'INIT' : 'END';
@@ -75,25 +68,66 @@ class SaveButton extends Component {
     });
   };
 
+  handleLikeClick = async () => {
+    this.setState({ likes: this.state.likes + 1 });
+    const res = await axios.post('/api/articles', { likes: 5 });
+    console.log(res);
+  };
+
+  handleDisLikeClick = () => {
+    this.setState({ dislikes: this.state.dislikes + 1 });
+  };
+
+  renderStar() {
+    if (this.state.isLoading == 'LOAD') {
+      return (
+        <div>
+          <div className="loader2">Loading...</div>
+        </div>
+      );
+    }
+    return (
+      <IconContext.Provider value={{ color: this.state.color, size: '2rem' }}>
+        <MdStarBorder />
+      </IconContext.Provider>
+    );
+  }
+
+  /*  <IconContext.Provider value={{ size: '1.5rem' }}>
+          <div style={{ marginLeft: '.2rem' }}>
+            <MdHourglassEmpty />
+          </div>
+        </IconContext.Provider> */
+
+  /*  */
+
   render() {
     return (
       <SaveButCont>
         <StarBd
           onClick={() => this.handleClick({ headline: this.props.headline })}
         >
-          <IconContext.Provider
-            value={{ color: this.state.color, size: '2rem' }}
-          >
-            <div>
-              <MdStarBorder />
-            </div>
-          </IconContext.Provider>
+          {this.renderStar()}
         </StarBd>
         <Liked>
-          <MdThumbUp />
+          <div style={{ display: 'flex' }}>
+            <IconContext.Provider value={{ color: 'green', size: '1.5rem' }}>
+              <MdThumbUp onClick={this.handleLikeClick} />
+            </IconContext.Provider>
+            <span style={{ color: 'green', marginLeft: '.5rem' }}>
+              {this.state.likes}
+            </span>
+          </div>
         </Liked>
         <Liked>
-          <MdThumbDown />
+          <div style={{ display: 'flex' }}>
+            <span style={{ color: 'red', marginRight: '.5rem' }}>
+              {this.state.dislikes}
+            </span>
+            <IconContext.Provider value={{ color: 'red', size: '1.5rem' }}>
+              <MdThumbDown onClick={this.handleDisLikeClick} />
+            </IconContext.Provider>
+          </div>
         </Liked>
       </SaveButCont>
     );
@@ -104,8 +138,3 @@ export default connect(
   null,
   actions
 )(SaveButton);
-
-/*<SaveBut
-        backgrnd={this.state.isLoading}
-        onClick={() => this.handleClick({ headline: this.props.headline })}
-      />*/

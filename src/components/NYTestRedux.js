@@ -5,6 +5,11 @@ import styled from 'styled-components';
 
 import ScrollProgress from './ScrollProgress';
 import SaveButton from './SaveButton';
+import LikedArticles from './LikedArticles';
+
+import { IconContext } from 'react-icons';
+import { MdHourglassEmpty } from 'react-icons/md';
+import Spinner from './Spinner';
 
 const Contr = styled.div`
   background-image: linear-gradient(to bottom right, white, rgb(225, 230, 239));
@@ -13,12 +18,12 @@ const Contr = styled.div`
   border-radius: 4px;
   display: grid;
   grid-template-columns: 2fr 2fr 1fr 1fr;
-  grid-template-rows: 0.5fr min-content 0.5fr 0.75fr;
+  grid-template-rows: min-content min-content min-content 2.4rem;
   grid-gap: 10px;
   grid-template-areas:
     'head head head head'
     'main main main main'
-    'auth date .    .   '
+    'auth auth date .   '
     'save save save save';
   width: 35vw;
   height: min-content;
@@ -38,7 +43,7 @@ const Headline = styled.div`
 const Articlesec = styled.div`
   grid-area: main;
   height: min-content;
-  margin: 0 2rem 3rem 2rem;
+  margin: 0 2rem 1rem 2rem;
   font-size: 1.05rem;
   display: flex;
   justify-content: start;
@@ -52,26 +57,62 @@ const Articlesec = styled.div`
 const Authr = styled.div`
   grid-area: auth;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  margin-bottom: 1.5rem;
+  margin-left: 1rem;
 `;
 const Dat = styled.div`
   grid-area: date;
   display: flex;
-  justify-content: center;
   align-items: center;
   width: max-content;
+  margin-bottom: 1.5rem;
 `;
 
 class NYTestRedux extends Component {
-  handleClickNews = async () => {
-    let art = [];
+  state = { loading_articles: false };
 
-    this.props.fetchArticles();
+  handleClickNews = async () => {
+    this.setState({ loading_articles: true });
+    await this.props.fetchArticles();
+    this.setState({ loading_articles: false });
   };
 
   renderContent() {
-    console.log('nytestredux props.articles', this.props.articles);
+    if (this.state.loading_articles) {
+      return (
+        <div
+          style={{
+            height: '75vh',
+            width: '100vw',
+            backgroundColor: 'gray',
+            opacity: '.7',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <Spinner />
+        </div>
+      );
+    }
+
+    /* <IconContext.Provider value={{ size: '50rem' }}>
+          <div
+            style={{
+              height: '100vh',
+              width: '100vw',
+              backgroundColor: 'gray',
+              opacity: '.7',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <MdHourglassEmpty />
+          </div>
+        </IconContext.Provider> */
 
     if (this.props.articles == null) {
       return;
@@ -83,10 +124,8 @@ class NYTestRedux extends Component {
     sty['fontSize'] = '2rem';
     sty['display'] = 'inline';
 
-    //this.props.articles.map(instance => console.log(instance.abstract));
-
     return this.props.articles.map(instance =>
-      instance.map(({ abstract, pub_date, headline, web_url }) => {
+      instance.map(({ abstract, pub_date, headline, web_url, byline }) => {
         let abs2 = abstract
           .split(' ')
           .map(word =>
@@ -101,7 +140,7 @@ class NYTestRedux extends Component {
                 <a href={web_url}>{headline.main.toUpperCase()}</a>
               </Headline>
               <Articlesec>{abs2}</Articlesec>
-              <Authr>AUTHOR</Authr>
+              <Authr>{byline.original.slice(3, byline.original.length)}</Authr>
               <Dat>{(new Date(pub_date) + '').slice(0, 16)}</Dat>
               <SaveButton user={this.props.user} headline={headline.main} />
             </Contr>
@@ -113,15 +152,22 @@ class NYTestRedux extends Component {
 
   render() {
     const style = { position: 'fixed' };
+    const outstyle = {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      alignItems: 'center',
+      justifyItems: 'center'
+    };
     const inputStyle = { margin: '4rem' };
     return (
-      <div>
+      <div style={{ margin: '0 auto' }}>
         <div>
           <button style={style} onClick={this.handleClickNews}>
             PRESS FOR NOOS
           </button>
+          <LikedArticles />
         </div>
-        <div style={{ margin: '0 auto' }}>{this.renderContent()}</div>
+        <div style={outstyle}>{this.renderContent()}</div>
         <ScrollProgress />
       </div>
     );
